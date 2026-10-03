@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Ocean Recovery · 신호어로 읽는 글의 구조</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" />
+  <link rel="stylesheet" href="src/style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="hud">
+    <div id="topbar">
+      <div id="stageChip" class="chip hidden"><b id="stageNo">STAGE 1</b><span id="stageName"></span></div>
+      <div id="health" class="chip hidden">
+        <div class="h-label">🌊 바다 회복도 <b id="healthPct">0%</b></div>
+        <div class="h-bar"><i id="healthFill"></i></div>
+      </div>
+      <div id="tools">
+        <button id="btnSheet" class="hidden" title="내용 정리">📋</button>
+        <button id="btnSound" title="소리 켜기/끄기">🔊</button>
+        <button id="btnFull" title="전체 화면">⛶</button>
+      </div>
+    </div>
+    <div id="guide" class="hidden"><span class="gull">🐦</span><p id="guideText"></p></div>
+    <aside id="sheet" class="hidden">
+      <div class="sheet-head">📋 내용 정리 <small>학습지</small></div>
+      <div id="sheetBody"></div>
+    </aside>
+    <section id="card" class="hidden"></section>
+  </div>
+
+  <div id="modal" class="hidden"><div id="modalBox" class="modal-box"></div></div>
+  <div id="flash"></div>
+
+  <div id="fileWarn" class="hidden">
+    <div>
+      <h2>로컬 서버로 실행해 주세요</h2>
+      <p>브라우저 보안 정책 때문에 파일을 더블클릭해서 열면 실행되지 않아요.</p>
+      <code>python3 -m http.server 8080</code>
+      <p>실행 후 <b>http://localhost:8080</b> 에 접속하세요.</p>
+    </div>
+  </div>
+  <script>
+    if (location.protocol === 'file:') document.getElementById('fileWarn').classList.remove('hidden');
+  </script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -188,6 +188,7 @@ export async function runStage1(ctx) {
   const N = CRISIS.length;
   for (let i = 0; i < N; i++) {
     const item = CRISIS[i];
+    ui.hideCard();
     const b = makeMessageBottle();
     scene.add(b.root, b.ring);
     const s = { mode: 'anim', target: new V3(), glow: false };

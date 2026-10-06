@@ -8,11 +8,30 @@ export class Rig {
     this.look = new THREE.Vector3(0, 0, -5);
     this.orbitCfg = null;
     this.shakeAmt = 0;
-    this.aspectK = 1;
+    this.W = 1;
+    this.H = 1;
+    this.ins = { t: 0, b: 0, l: 0, r: 0 };
+    this.insT = { t: 0, b: 0, l: 0, r: 0 };
     this.mouse = new THREE.Vector2();
     this._off = new THREE.Vector3();
   }
-  setAspect(a) { this.aspectK = a < 1.5 ? Math.min(1.9, 1.5 / a) : 1; }
+  setSize(w, h) { this.W = w; this.H = h; }
+  // 화면 가장자리를 가리는 UI 영역(px). 카메라는 남은 빈 영역에 장면을 맞춘다.
+  setInsets(ins) { this.insT = ins; }
+  _frame(dt) {
+    const i = this.ins;
+    for (const k of ['t', 'b', 'l', 'r']) {
+      const d = this.insT[k] - i[k];
+      i[k] += d * Math.min(1, dt * (d > 0 ? 6 : 2));
+    }
+    const { W, H } = this;
+    const fw = W - i.l - i.r, fh = H - i.t - i.b;
+    const Wf = Math.max(W * 0.4, fw), Hf = Math.max(H * 0.35, fh);
+    const cx = i.l + fw / 2, cy = i.t + fh / 2;
+    this.cam.setViewOffset(W, H, W / 2 - cx, H / 2 - cy, W, H);
+    this.cam.updateProjectionMatrix();
+    return Math.min(2.4, Math.pow(H / Hf, 0.75) * Math.max(1, (1.5 * Hf) / Wf));
+  }
   set(pos, look) { this.orbitCfg = null; this.pos.copy(pos); this.look.copy(look); }
   orbit(center, radius, height, speed) {
     this.orbitCfg = {
@@ -38,7 +57,7 @@ export class Rig {
     }
     this.mouse.lerp(ndc, Math.min(1, dt * 2));
     const c = this.cam;
-    this._off.subVectors(this.pos, this.look).multiplyScalar(this.aspectK);
+    this._off.subVectors(this.pos, this.look).multiplyScalar(this._frame(dt));
     c.position.copy(this.look).add(this._off);
     c.position.x += Math.sin(t * 0.31) * 0.25 + this.mouse.x * 0.45;
     c.position.y += Math.sin(t * 0.23) * 0.18 + this.mouse.y * 0.25;

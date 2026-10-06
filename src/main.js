@@ -38,6 +38,7 @@ const ctx = {
   stats: { first: 0, total: 0 },
   titleText: '',
 };
+if (location.search.includes('debug')) window.__game = ctx;
 ctx.addUpdater = (fn) => { ctx.updaters.add(fn); return () => ctx.updaters.delete(fn); };
 ctx.record = (ok) => { ctx.stats.total++; if (ok) ctx.stats.first++; };
 ctx.setHealth = (v) => {
@@ -52,7 +53,7 @@ function resize() {
   labels.setSize(w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
-  rig.setAspect(w / h);
+  rig.setSize(w, h);
   particles.setScale(h * renderer.getPixelRatio(), camera.fov);
 }
 window.addEventListener('resize', resize);
@@ -64,6 +65,7 @@ renderer.setAnimationLoop(() => {
   const dt = Math.min(clock.getDelta(), 0.05);
   T += dt;
   updateTweens(dt);
+  rig.setInsets(ui.insets());
   rig.update(dt, T, input.ndc);
   world.update(dt, camera, rig.look);
   for (const f of ctx.updaters) f(dt, T);

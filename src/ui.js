@@ -79,6 +79,19 @@ export class UI {
     this.healthPct.textContent = p + '%';
   }
 
+  insets() {
+    const W = window.innerWidth, H = window.innerHeight, m = 12;
+    const shown = (el) => !el.classList.contains('hidden');
+    let t = 0;
+    for (const el of [this.stageChip, this.healthEl, this.guideEl]) {
+      if (shown(el)) t = Math.max(t, el.getBoundingClientRect().bottom);
+    }
+    const b = shown(this.cardEl) ? H - this.cardEl.getBoundingClientRect().top : 0;
+    const r = shown(this.sheetEl) ? W - this.sheetEl.getBoundingClientRect().left : 0;
+    const l = this.modalEl.classList.contains('side') ? this.modalBox.getBoundingClientRect().right : 0;
+    return { t: t && t + m, b: b && b + m, l: l && l + m, r: r && r + m };
+  }
+
   /* ---------- guide ---------- */
   guide(html) {
     const g = this.guideEl;
@@ -153,7 +166,7 @@ export class UI {
   _showSheetButton() {
     if (!this.btnSheet.classList.contains('hidden')) return;
     this.btnSheet.classList.remove('hidden');
-    if (window.innerWidth >= 1280) this.setSheet(true);
+    if (window.innerWidth >= 1600) this.setSheet(true);
   }
   _nudge(el) {
     el.classList.remove('new');
